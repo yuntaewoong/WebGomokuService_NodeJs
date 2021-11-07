@@ -1,5 +1,5 @@
 
-//var socket = io();
+var socket = io();
 
 var board = new Board();
 board.gameState = GameState.BLACKTURN;
