@@ -3,6 +3,10 @@
 <% if(!user){ %>
   <a href="auth/login">Login</a>
 <% } else { %>
-  <p>Welcome <%= user.displayName %></p>
+  <p>Welcome <%= user.id %></p>
+    <form class="form-inline" action="/enterGame" method="post">
+        <input type="hidden" value= "<%= user.id%>" name="userID">
+        <button class="btn btn-primary btn-sm">Confirm</button>
+    </form>
     <a href="auth/logout">Logout</a>
 <% } %>
