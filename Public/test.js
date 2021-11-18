@@ -1,5 +1,9 @@
 
-//var socket = io();
+var socket = io();
+socket.emit('JoinRoom');//방 입장요청
+socket.on("GameReady",function() {
+    console.log("GameReady");
+});
 
 var board = new Board();
 board.gameState = GameState.BLACKTURN;
