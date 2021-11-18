@@ -139,7 +139,6 @@ class Board
 	}
 	ParseMouseToBoard(mouse)
 	{
-		console.log(parseInt((mouse - this.blank)/this.gridSize));
 		return parseInt((mouse - this.blank)/this.gridSize);
 	}
 }
