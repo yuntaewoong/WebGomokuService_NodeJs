@@ -8,7 +8,6 @@ var session   = require('express-session');
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
-var room = require("./Room.js");
 const Room = require('./Room.js');
 var io = socket(server);
 
@@ -39,18 +38,28 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     if(Rooms.length == RoomNum)//아직 RoomNum에 해당하는 Room이 존재하지 않는다면
     {
       Rooms.push(new Room(RoomNum));//방정보 생성
-      Rooms.blackID = socket.id;
+      Rooms[RoomNum].blackID = socket.id;
     }
     else//이미 RoomNum해당하는 Room이 존재한다면
     {
-      Rooms.whiteID = socket.id;
-      io.sockets.in(RoomNum).emit('GameReady');//게임 준비가 되었음을 전달
+      Rooms[RoomNum].whiteID = socket.id;
+      io.to(Rooms[RoomNum].whiteID).emit('GameReady', 'white',RoomNum);
+      io.to(Rooms[RoomNum].blackID).emit('GameReady', 'black',RoomNum);//플레이어에게 게임이 준비되었고 자신의 돌이 흑,백중 무엇인지 전달
       RoomNum++;
     }
-    });
-  
-  
-  
+  });
+  socket.on("PutBlackStone",function(blackXIndex,blackYIndex,roomNum){//흑색 플레이어가 착수요청
+    console.log("PutBlackRequest x : " + blackXIndex + "y : " + blackYIndex + " roomNum : " + roomNum );
+    Rooms[roomNum].board[blackYIndex][blackXIndex] = 1;//흑돌 착수
+    Rooms[roomNum].currentTurn = 2;//백색턴으로 전환
+    io.in(roomNum).emit("GameUpdate",2,blackXIndex,blackYIndex);//착수한 결과를 해당 방에 전달
+  });
+  socket.on("PutWhiteStone",function(whiteXIndex,whiteYIndex,roomNum){//백색 플레이어가 착수요청
+    console.log("PutWhiteRequest");
+    Rooms[roomNum].board[whiteYIndex][whiteXIndex] = 2;//백돌 착수
+    Rooms[roomNum].currentTurn = 1;//흑색턴으로 전환
+    io.in(roomNum).emit("GameUpdate",1,whiteXIndex,whiteYIndex);//착수한 결과를 해당 방에 전달
+  });
   socket.on('disconnect', function () {
 		  console.log('user disconnected');
   });
