@@ -13,10 +13,12 @@ class Board
 	mouseY;
 	mouseOnRectSize = 20;
 	gameState;
+	myColor;
+	roomNum;
 	constructor()
 	{
 		let self = this;
-		addEventListener("mousemove",function(e){
+		addEventListener("mousemove",function(e){//mouse on rect를 출력
 			self.mouseX = e.clientX;
 			self.mouseY = e.clientY;
 		});
@@ -121,6 +123,8 @@ class Board
 	{
 		if(this.gameState == GameState.BLACKTURN)
 		{
+			if(this.myColor == "white")
+				return;//백색 플레이어는 흑색턴에는 무반응
 			ctx.beginPath();
 			ctx.fillStyle = "#000000";
 			ctx.rect(this.ParseMouseToBoard(this.mouseX) * this.gridSize + this.blank-this.mouseOnRectSize/2,this.ParseMouseToBoard(this.mouseY) * this.gridSize + this.blank-this.mouseOnRectSize/2,this.mouseOnRectSize,this.mouseOnRectSize);
@@ -129,6 +133,8 @@ class Board
 		}
 		else if(this.gameState == GameState.WHITETURN)
 		{
+			if(this.myColor == "black")
+				return;//흑색 플레이어는 백색턴에는 무반응
 			ctx.strokeRect(this.ParseMouseToBoard(this.mouseX) * this.gridSize + this.blank-this.mouseOnRectSize/2,this.ParseMouseToBoard(this.mouseY) * this.gridSize + this.blank-this.mouseOnRectSize/2,this.mouseOnRectSize,this.mouseOnRectSize);
 			ctx.beginPath();
 			ctx.fillStyle = "#ffffff";
@@ -139,6 +145,11 @@ class Board
 	}
 	ParseMouseToBoard(mouse)
 	{
-		return parseInt((mouse - this.blank)/this.gridSize);
+		if(parseInt((mouse - this.blank)/this.gridSize) < 0)
+			return 0;
+		else if(parseInt((mouse - this.blank)/this.gridSize) >= this.grids)
+			return this.grids-1;
+		else
+			return parseInt((mouse - this.blank)/this.gridSize);
 	}
 }
