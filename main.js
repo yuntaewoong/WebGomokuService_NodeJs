@@ -50,15 +50,31 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
   });
   socket.on("PutBlackStone",function(blackXIndex,blackYIndex,roomNum){//흑색 플레이어가 착수요청
     console.log("PutBlackRequest x : " + blackXIndex + "y : " + blackYIndex + " roomNum : " + roomNum );
-    Rooms[roomNum].board[blackYIndex][blackXIndex] = 1;//흑돌 착수
-    Rooms[roomNum].currentTurn = 2;//백색턴으로 전환
-    io.in(roomNum).emit("GameUpdate",2,blackXIndex,blackYIndex);//착수한 결과를 해당 방에 전달
+    if(Rooms[roomNum].IsBlackWin(blackXIndex,blackYIndex))//오목 완성했을때
+    {
+      Rooms[roomNum].board[blackYIndex][blackXIndex] = 1;//흑돌 착수
+      io.in(roomNum).emit("GameEnd",1);//흑이 이겼다고 해당 방에 전달
+    }
+    else//완성못했을때
+    {
+      Rooms[roomNum].board[blackYIndex][blackXIndex] = 1;//흑돌 착수
+      Rooms[roomNum].currentTurn = 2;//백색턴으로 전환
+      io.in(roomNum).emit("GameUpdate",2,blackXIndex,blackYIndex);//착수한 결과를 해당 방에 전달
+    }
   });
   socket.on("PutWhiteStone",function(whiteXIndex,whiteYIndex,roomNum){//백색 플레이어가 착수요청
     console.log("PutWhiteRequest");
-    Rooms[roomNum].board[whiteYIndex][whiteXIndex] = 2;//백돌 착수
-    Rooms[roomNum].currentTurn = 1;//흑색턴으로 전환
-    io.in(roomNum).emit("GameUpdate",1,whiteXIndex,whiteYIndex);//착수한 결과를 해당 방에 전달
+    if(Rooms[roomNum].IsWhiteWin(whiteXIndex,whiteYIndex))//오목 완성했을때
+    {
+      Rooms[roomNum].board[whiteYIndex][whiteXIndex] = 2;//백돌 착수
+      io.in(roomNum).emit("GameEnd",2);//백이 이겼다고 해당 방에 전달
+    }
+    else//오목 완성못했을때
+    {
+      Rooms[roomNum].board[whiteYIndex][whiteXIndex] = 2;//백돌 착수
+      Rooms[roomNum].currentTurn = 1;//흑색턴으로 전환
+      io.in(roomNum).emit("GameUpdate",1,whiteXIndex,whiteYIndex);//착수한 결과를 해당 방에 전달
+    }
   });
   socket.on('disconnect', function () {
 		  console.log('user disconnected');
