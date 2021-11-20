@@ -1,0 +1,12 @@
+<h1>Main Page</h1>
+
+<% if(!user){ %>
+  <a href="auth/login">Login</a>
+<% } else { %>
+  <p>Welcome <%= user.id %></p>
+    <form class="form-inline" action="/game" method="post">
+        <input type="hidden" value= "<%= user.id%>" name="userID">
+        <button class="btn btn-primary btn-sm">Confirm</button>
+    </form>
+    <a href="auth/logout">Logout</a>
+<% } %>
