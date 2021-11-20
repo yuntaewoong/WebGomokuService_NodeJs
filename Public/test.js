@@ -24,6 +24,9 @@ socket.on("GameUpdate",function(nextTurn,xIndex,yIndex){//서버로부터 게임
         board.gameState = GameState.WHITETURN;
     }
 });
+socket.on("GameEnd",function(color){//서버로부터 게임종료 통보받음,color가 이김
+    console.log("GameEnd");
+});
 addEventListener("click",function(e){//클릭 이벤트
     if(board.gameState == GameState.BLACKTURN && board.myColor == 'black')
     {
