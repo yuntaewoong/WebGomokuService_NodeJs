@@ -53,7 +53,8 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     if(Rooms[roomNum].IsBlackWin(blackXIndex,blackYIndex))//오목 완성했을때
     {
       Rooms[roomNum].board[blackYIndex][blackXIndex] = 1;//흑돌 착수
-      io.in(roomNum).emit("GameEnd",1);//흑이 이겼다고 해당 방에 전달
+      io.in(roomNum).emit("GameUpdate",2,blackXIndex,blackYIndex);//착수한 결과를 해당 방에 전달
+      io.in(roomNum).emit("GameEnd",'black');//흑이 이겼다고 해당 방에 전달
     }
     else//완성못했을때
     {
@@ -67,7 +68,8 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     if(Rooms[roomNum].IsWhiteWin(whiteXIndex,whiteYIndex))//오목 완성했을때
     {
       Rooms[roomNum].board[whiteYIndex][whiteXIndex] = 2;//백돌 착수
-      io.in(roomNum).emit("GameEnd",2);//백이 이겼다고 해당 방에 전달
+      io.in(roomNum).emit("GameUpdate",1,whiteXIndex,whiteYIndex);//착수한 결과를 해당 방에 전달
+      io.in(roomNum).emit("GameEnd",'white');//백이 이겼다고 해당 방에 전달
     }
     else//오목 완성못했을때
     {
