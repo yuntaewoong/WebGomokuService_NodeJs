@@ -1,11 +1,8 @@
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-var GameState = Object.freeze({"BLACKTURN":1,"WHITETURN":2});
 
 class Board
 {
 	size = 800;
-	blank = (canvas.width -this.size)/2;
+	blank = 100;
 	grids = 19;
 	gridSize = this.size/(this.grids-1);
 	infos;
@@ -15,8 +12,10 @@ class Board
 	gameState;
 	myColor;
 	roomNum;
+	ui;
 	constructor()
 	{
+		this.ui = new UI();
 		let self = this;
 		addEventListener("mousemove",function(e){//mouse on rect를 출력
 			self.mouseX = e.clientX;
@@ -64,6 +63,7 @@ class Board
 	Update()
 	{
 		this.DrawBoard();
+		this.ui.Update();
 	}
 	DrawBoard()//0:빈칸 1:흑돌 2:백돌
 	{
