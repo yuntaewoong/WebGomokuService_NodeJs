@@ -15,6 +15,7 @@ var io = socket(server);
 var RoomNum = 0;
 var Rooms = [];
 var tempUserId = 0;
+var tempUserDisplayName = '';
 //DB
 const sqlite3 = require("sqlite3").verbose();
 const db_name = path.join(__dirname, "DB", "UserInfo.db");
@@ -24,7 +25,7 @@ const db = new sqlite3.Database(db_name, err => {
   }
   console.log("Successful connection to the database 'apptest.db'");
 });
-var sql_create = "CREATE TABLE Users (id INTEGER, displayName text, winCount INTEGER, loseCount INTEGER, rating INTEGER);"
+var sql_create = "CREATE TABLE Users (id text, displayName text, winCount integer, loseCount integer, rating integer);"
 db.run(sql_create, err => {
   if( err ) {
     return console.error(err.message);
@@ -46,8 +47,8 @@ app.use(express.static(path.join(__dirname, 'Public')));
 server.listen(3000, function() {});
 
 app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 게임입장을 요청
-  console.log(req.body.id);
-  tempUserId = req.body.id;
+  tempUserId = parseInt(req.body.id);
+  tempUserDisplayName = req.body.displayName;
   res.sendFile(path.join(__dirname, 'Index.html'));
 });
 
@@ -55,7 +56,24 @@ app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 
 io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관리됨
 	console.log('io connected');
   socket.emit("GetId",tempUserId);
-  socket.on('JoinRoom', () => {
+  socket.on('JoinRoom', (id,displayName) => {
+    console.log(id);
+    
+    let findQuery = "SELECT * FROM Users WHERE id = ?";
+    db.get(findQuery,id,(err,row)=>{//먼저 이 id의 플레이어가 db에 있는지 검색
+        if(!row)//해당 id가 존재하지 않음
+        {
+          let insertQuery = "INSERT INTO Users(id, displayName,winCount,loseCount,rating) VALUES(?,?,?,?,?)";
+          db.run(insertQuery,id,displayName,0,0,0, function (err) {
+          if (err) {//이미 존재하는 id
+            isInsertFinishedCollectly = false;
+            errorMessage = "이미 존재하는 id";
+          }
+        });
+        console.log("Insert New User to DB");
+        }
+      });
+      
     socket.join(RoomNum);
     if(Rooms.length == RoomNum)//아직 RoomNum에 해당하는 Room이 존재하지 않는다면
     {
