@@ -9,10 +9,13 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 const Room = require('./Room.js');
+const { json } = require('body-parser');
+const { emit } = require('process');
 var io = socket(server);
 
 var RoomNum = 0;
 var Rooms = [];
+var tempUserId = 0;
 app.set('view engine', 'ejs');
 app.use(session({secret:'MySecret', resave: false, saveUninitialized:true}));
 
@@ -27,12 +30,15 @@ app.use(express.static(path.join(__dirname, 'Public')));
 server.listen(3000, function() {});
 
 app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 게임입장을 요청
+  console.log(req.body.id);
+  tempUserId = req.body.id;
   res.sendFile(path.join(__dirname, 'Index.html'));
 });
 
 
 io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관리됨
 	console.log('io connected');
+  socket.emit("GetId",tempUserId);
   socket.on('JoinRoom', () => {
     socket.join(RoomNum);
     if(Rooms.length == RoomNum)//아직 RoomNum에 해당하는 Room이 존재하지 않는다면

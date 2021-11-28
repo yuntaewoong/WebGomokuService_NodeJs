@@ -1,8 +1,12 @@
 
 var socket = io();
-
+var MyId = 0;
 var board = new Board();
 socket.emit('JoinRoom');//방 입장요청
+socket.on("GetId",function(id){
+    console.log("get id");
+    MyId = id;
+});
 socket.on("GameReady",function(stoneColor,roomNum) {//서버로부터 게임준비가 완료되었다고 전달받음
     console.log("GameReady My stone color is" +  stoneColor);
     board.myColor = stoneColor;//내 돌색깔 설정
@@ -34,6 +38,16 @@ socket.on("GameEnd",function(color){//서버로부터 게임종료 통보받음,
         board.ui.isBlackWin = true;
     else if(color == 'white')
         board.ui.isWhiteWin = true;
+    board.gameState = GameState.GAMEEND;
+    board.ui.gameState = GameState.GAMEEND;
+    addEventListener("mousedown",function(e){
+        if(e.clientX >= board.ui.returnHomeButtonX && e.clientX <= board.ui.returnHomeButtonX + board.ui.returnHomeButtonWidth &&
+            e.clientY >= board.ui.returnHomeButtonY && e.clientY <= board.ui.returnHomeButtonY + board.ui.returnHomeButtonHeight)//return home 버튼클릭이벤트 등록
+        {
+            this.location.replace("/");
+            console.log("go home");
+        }
+    });
 });
 addEventListener("click",function(e){//클릭 이벤트
     if(board.gameState == GameState.BLACKTURN && board.myColor == 'black')
