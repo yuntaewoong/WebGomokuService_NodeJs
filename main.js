@@ -12,10 +12,26 @@ const Room = require('./Room.js');
 const { json } = require('body-parser');
 const { emit } = require('process');
 var io = socket(server);
-
 var RoomNum = 0;
 var Rooms = [];
 var tempUserId = 0;
+//DB
+const sqlite3 = require("sqlite3").verbose();
+const db_name = path.join(__dirname, "DB", "UserInfo.db");
+const db = new sqlite3.Database(db_name, err => {
+  if(err) {
+    return console.error(err.message);
+  }
+  console.log("Successful connection to the database 'apptest.db'");
+});
+var sql_create = "CREATE TABLE Users (id INTEGER, displayName text, winCount INTEGER, loseCount INTEGER, rating INTEGER);"
+db.run(sql_create, err => {
+  if( err ) {
+    return console.error(err.message);
+  }
+  console.log("Successful creation of the 'Users' table!");
+});
+
 app.set('view engine', 'ejs');
 app.use(session({secret:'MySecret', resave: false, saveUninitialized:true}));
 
