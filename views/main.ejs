@@ -5,8 +5,9 @@
 <% } else { %>
   <p>Welcome <%= user.id %></p>
     <form class="form-inline" action="/game" method="post">
-        <input type="hidden" value= "<%= user.id%>" name="userID">
-        <button class="btn btn-primary btn-sm">Confirm</button>
+        <input type="hidden" value = "<%= user.id%>" name = "id">
+        <input type="hidden" value= "<%= user.displayName%>" name="displayName">
+        <button class="btn btn-primary btn-sm">Go Game</button>
     </form>
     <a href="auth/logout">Logout</a>
 <% } %>
