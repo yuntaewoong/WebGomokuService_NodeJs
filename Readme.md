@@ -44,6 +44,7 @@ config/passport.js의 process.env.GOOGLE_CLIENT_ID,process.env.GOOGLE_SECRET을 
 ```
   node main.js
   ```
+* http://localhost:3000 로 접속 
 ## Usage
 
 
