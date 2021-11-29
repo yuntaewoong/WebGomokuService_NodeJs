@@ -62,9 +62,6 @@ class UI
             ctx.closePath();
         }
 	}
-<<<<<<< HEAD
-    
-=======
     DrawInfo()
     {
         this.DrawMyInfo();
@@ -91,5 +88,4 @@ class UI
         ctx.fillText(board.myColor == "white" ? "black" : "white",this.OpponentInfoX ,this.OpponentInfoY + 4 * this.InfoTextYOffset);
     
     }
->>>>>>> feature/client
 }
