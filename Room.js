@@ -1,8 +1,10 @@
 class Room//2명이서 진행되는 오목 게임정보를 관리하는 클래스
 {
     roomName;
-    blackID = 0;
-    whiteID = 0;
+    blackId = 0;
+    whiteId = 0;
+    blackSocketId = 0;
+    whiteSocketId = 0;
     currentTurn = 1;//1:흑색턴 2:백색턴
     board = [//room별로 관리되는 판정보 0:빈칸 1:흑 2:백
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
