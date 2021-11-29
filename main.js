@@ -14,6 +14,7 @@ const { emit } = require('process');
 var io = socket(server);
 var RoomNum = 0;
 var Rooms = [];
+var Users = [];
 var tempUserId = 0;
 var tempUserDisplayName = '';
 //DB
@@ -49,15 +50,19 @@ server.listen(3000, function() {});
 app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 게임입장을 요청
   tempUserId = parseInt(req.body.id);
   tempUserDisplayName = req.body.displayName;
+  // for(let i  =0;i<Users.length;i++)
+  //   if(Users[i] == tempUserId)
+  //     res.send("중복된 id로 접속할 수 없습니다. 다른 ID로 다시 접속해주세요");
+  Users.push(tempUserId);
   res.sendFile(path.join(__dirname, 'Index.html'));
 });
 
 
 io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관리됨
 	console.log('io connected');
-  socket.emit("GetId",tempUserId);
+  socket.emit("GetId",tempUserId,tempUserDisplayName);
   socket.on('JoinRoom', (id,displayName) => {
-    console.log(id);
+    console.log(displayName);
     
     let findQuery = "SELECT * FROM Users WHERE id = ?";
     db.get(findQuery,id,(err,row)=>{//먼저 이 id의 플레이어가 db에 있는지 검색
@@ -78,13 +83,15 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     if(Rooms.length == RoomNum)//아직 RoomNum에 해당하는 Room이 존재하지 않는다면
     {
       Rooms.push(new Room(RoomNum));//방정보 생성
-      Rooms[RoomNum].blackID = socket.id;
+      Rooms[RoomNum].blackSocketId = socket.id;
+      Rooms[RoomNum].blackId = id;
     }
     else//이미 RoomNum해당하는 Room이 존재한다면
     {
-      Rooms[RoomNum].whiteID = socket.id;
-      io.to(Rooms[RoomNum].whiteID).emit('GameReady', 'white',RoomNum);
-      io.to(Rooms[RoomNum].blackID).emit('GameReady', 'black',RoomNum);//플레이어에게 게임이 준비되었고 자신의 돌이 흑,백중 무엇인지 전달
+      Rooms[RoomNum].whiteSocketId = socket.id;
+      Rooms[RoomNum].whiteId = id;
+      io.to(Rooms[RoomNum].whiteSocketId).emit('GameReady', 'white',RoomNum);
+      io.to(Rooms[RoomNum].blackSocketId).emit('GameReady', 'black',RoomNum);//플레이어에게 게임이 준비되었고 자신의 돌이 흑,백중 무엇인지 전달
       RoomNum++;
     }
   });
@@ -93,6 +100,28 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     if(Rooms[roomNum].IsBlackWin(blackXIndex,blackYIndex))//오목 완성했을때
     {
       Rooms[roomNum].board[blackYIndex][blackXIndex] = 1;//흑돌 착수
+      //흑색 승리결과 DB반영
+      let findQuery = "SELECT * FROM Users WHERE id = ?";
+      db.get(findQuery,Rooms[roomNum].blackId,(err,row)=>{//먼저 이 id의 플레이어가 db에 있는지 검색
+        let sql = "UPDATE Users SET winCount = (?) WHERE id = (?)";
+        db.run(sql,row.winCount+1,Rooms[roomNum].blackId, function (err) {
+          if (err) {
+              return console.error(err.message);
+          }
+          console.log("Users Update");
+        });
+      });
+      //백색 패배결과 DB반영
+      findQuery = "SELECT * FROM Users WHERE id = ?";
+      db.get(findQuery,Rooms[roomNum].whiteId,(err,row)=>{//먼저 이 id의 플레이어가 db에 있는지 검색
+        let sql = "UPDATE Users SET loseCount = (?) WHERE id = (?)";
+        db.run(sql,row.loseCount+1,Rooms[roomNum].whiteId, function (err) {
+          if (err) {
+              return console.error(err.message);
+          }
+          console.log("Users Update");
+        });
+      });
       io.in(roomNum).emit("GameUpdate",2,blackXIndex,blackYIndex);//착수한 결과를 해당 방에 전달
       io.in(roomNum).emit("GameEnd",'black');//흑이 이겼다고 해당 방에 전달
     }
@@ -108,6 +137,28 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     if(Rooms[roomNum].IsWhiteWin(whiteXIndex,whiteYIndex))//오목 완성했을때
     {
       Rooms[roomNum].board[whiteYIndex][whiteXIndex] = 2;//백돌 착수
+      //백색 승리결과 DB반영
+      let findQuery = "SELECT * FROM Users WHERE id = ?";
+      db.get(findQuery,Rooms[roomNum].whiteId,(err,row)=>{//먼저 이 id의 플레이어가 db에 있는지 검색
+        let sql = "UPDATE Users SET winCount = (?) WHERE id = (?)";
+        db.run(sql,row.winCount+1,Rooms[roomNum].whiteId, function (err) {
+          if (err) {
+              return console.error(err.message);
+          }
+          console.log("Users Update");
+        });
+      });
+      //흑색 패배결과 DB반영
+      findQuery = "SELECT * FROM Users WHERE id = ?";
+      db.get(findQuery,Rooms[roomNum].blackId,(err,row)=>{//먼저 이 id의 플레이어가 db에 있는지 검색
+        let sql = "UPDATE Users SET loseCount = (?) WHERE id = (?)";
+        db.run(sql,row.loseCount+1,Rooms[roomNum].blackId, function (err) {
+          if (err) {
+              return console.error(err.message);
+          }
+          console.log("Users Update");
+        });
+      });
       io.in(roomNum).emit("GameUpdate",1,whiteXIndex,whiteYIndex);//착수한 결과를 해당 방에 전달
       io.in(roomNum).emit("GameEnd",'white');//백이 이겼다고 해당 방에 전달
     }
