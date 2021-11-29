@@ -169,6 +169,37 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
       io.in(roomNum).emit("GameUpdate",1,whiteXIndex,whiteYIndex);//착수한 결과를 해당 방에 전달
     }
   });
+  socket.on("GetScreenInfo",function(){
+    for(let i = 0;i<Rooms.length;i++)
+    {
+      if(Rooms[i].blackSocketId == socket.id)
+      {
+        let findQuery = "SELECT * FROM Users WHERE id = ?";
+        db.get(findQuery,Rooms[i].blackId,(err,row)=>{
+          if(row)
+            io.to(Rooms[i].blackSocketId).emit("GetMyInfo",row.displayName,row.winCount,row.loseCount);
+        });
+        findQuery = "SELECT * FROM Users WHERE id = ?";
+        db.get(findQuery,Rooms[i].whiteId,(err,row)=>{
+          if(row)
+            io.to(Rooms[i].blackSocketId).emit("GetOpponentInfo",row.displayName,row.winCount,row.loseCount);
+        });
+      }
+      if(Rooms[i].whiteSocketId == socket.id)
+      {
+        let findQuery = "SELECT * FROM Users WHERE id = ?";
+        db.get(findQuery,Rooms[i].whiteId,(err,row)=>{
+          if(row)
+            io.to(Rooms[i].whiteSocketId).emit("GetMyInfo",row.displayName,row.winCount,row.loseCount);
+        });
+        findQuery = "SELECT * FROM Users WHERE id = ?";
+        db.get(findQuery,Rooms[i].blackId,(err,row)=>{
+          if(row)
+            io.to(Rooms[i].whiteSocketId).emit("GetOpponentInfo",row.displayName,row.winCount,row.loseCount);
+        });
+      }
+    }
+  });
   socket.on('disconnect', function () {
 		  console.log('user disconnected');
   });
