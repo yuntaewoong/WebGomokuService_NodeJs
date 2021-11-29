@@ -9,6 +9,14 @@ class UI
     returnHomeButtonY = 500;
     returnHomeButtonWidth = 100;
     returnHomeButtonHeight = 100;
+    MyInfoX = 0;
+    MyInfoY = 0;
+    OpponentInfoX = 900;
+    OpponentInfoY = 0;
+    InfoWidth = 100;
+    InfoHeight = 100;
+    InfoTextXOffset = 50;
+    InfoTextYOffset = 20;
     waitingUIX = 400;
     waitingUIY = 50;
     gameState = GameState.BLACKTURN;
@@ -22,6 +30,7 @@ class UI
 	{
 		this.DrawWinUI();
         this.DrawWaitingUI();
+        this.DrawInfo();
     }
 	DrawWinUI()
 	{
@@ -53,5 +62,34 @@ class UI
             ctx.closePath();
         }
 	}
+<<<<<<< HEAD
     
+=======
+    DrawInfo()
+    {
+        this.DrawMyInfo();
+        this.DrawOpponentInfo();
+    }
+    DrawMyInfo()
+    {
+        ctx.strokeRect(this.MyInfoX,this.MyInfoY,this.InfoWidth,this.InfoHeight);
+        ctx.font = '18px serif';
+        ctx.fillStyle = "rgba(0,0,0,1)";
+        ctx.fillText(MyDisplayName,this.MyInfoX ,this.MyInfoY + this.InfoTextYOffset);
+        ctx.fillText("win : " + MyWinCount,this.MyInfoX ,this.MyInfoY + 2 * this.InfoTextYOffset);
+        ctx.fillText("lose : " + MyLoseCount,this.MyInfoX ,this.MyInfoY + 3 * this.InfoTextYOffset);
+        ctx.fillText(board.myColor == "white" ? "white" : "black",this.MyInfoX ,this.MyInfoY + 4 * this.InfoTextYOffset);
+    }
+    DrawOpponentInfo()
+    {
+        ctx.strokeRect(this.OpponentInfoX,this.OpponentInfoY,this.InfoWidth,this.InfoHeight);
+        ctx.font = '18px serif';
+        ctx.fillStyle = "rgba(0,0,0,1)";
+        ctx.fillText(OpponentDisplayName,this.OpponentInfoX  ,this.OpponentInfoY + this.InfoTextYOffset);
+        ctx.fillText("win : " + OpponentWinCount,this.OpponentInfoX  ,this.OpponentInfoY + 2 * this.InfoTextYOffset);
+        ctx.fillText("lose : " + OpponentLoseCount,this.OpponentInfoX ,this.OpponentInfoY + 3 * this.InfoTextYOffset);
+        ctx.fillText(board.myColor == "white" ? "black" : "white",this.OpponentInfoX ,this.OpponentInfoY + 4 * this.InfoTextYOffset);
+    
+    }
+>>>>>>> feature/client
 }

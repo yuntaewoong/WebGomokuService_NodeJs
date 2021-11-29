@@ -1,13 +1,34 @@
 
 var socket = io();
 var MyId = 0;
+var MyDisplayName = '?';
+var MyWinCount = -1;
+var MyLoseCount = -1;
+var OpponentDisplayName = '?';
+var OpponentWinCount = -1;
+var OpponentLoseCount = -1;
 var board = new Board();
-socket.emit('JoinRoom');//방 입장요청
-socket.on("GetId",function(id){
+setInterval(function() {
+    socket.emit("GetScreenInfo");
+  }, 1000);
+socket.on("GetId",function(id,displayName){
     console.log("get id");
     MyId = id;
+    MyDisplayName = displayName;
+    socket.emit('JoinRoom',MyId,MyDisplayName);//방 입장요청
+});
+socket.on("GetMyInfo",function(displayName,winCount,loseCount){
+    MyDisplayName = displayName;
+    MyWinCount = winCount;
+    MyLoseCount = loseCount;
+});
+socket.on("GetOpponentInfo",function(displayName,winCount,loseCount){
+    OpponentDisplayName = displayName;
+    OpponentWinCount = winCount;
+    OpponentLoseCount = loseCount;
 });
 socket.on("GameReady",function(stoneColor,roomNum) {//서버로부터 게임준비가 완료되었다고 전달받음
+    socket.emit("GetScreenInfo");
     console.log("GameReady My stone color is" +  stoneColor);
     board.myColor = stoneColor;//내 돌색깔 설정
     board.ui.myColor = stoneColor;
@@ -33,6 +54,7 @@ socket.on("GameUpdate",function(nextTurn,xIndex,yIndex){//서버로부터 게임
     }
 });
 socket.on("GameEnd",function(color){//서버로부터 게임종료 통보받음,color가 이김
+    socket.emit("GetScreenInfo");
     console.log("GameEnd winner : " + color);
     if(color == "black")
         board.ui.isBlackWin = true;
