@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <br>
+        <% if(data){ %>
+            <% for(let i=0;i<data.length;i++){ %>
+                사용자 이름 : <%= data[i].displayName %> 승 : <%= data[i].winCount %> 패 : <%= data[i].loseCount %><br>
+            <% } %>
+        <% } %>
+    <a href="javascript:history.back();">뒤로가기</a>
+    </body>
+</html>
+</html>
