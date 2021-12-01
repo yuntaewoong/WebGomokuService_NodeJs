@@ -56,7 +56,13 @@ app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 
   Users.push(tempUserId);
   res.sendFile(path.join(__dirname, 'Index.html'));
 });
-
+app.get('/gameData',function(req,res){
+  let findQuery = "SELECT * FROM Users";
+  db.all(findQuery,(err,row)=>{
+    res.render('data.ejs',{'data' : row});
+  });
+  
+});
 
 io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관리됨
 	console.log('io connected');

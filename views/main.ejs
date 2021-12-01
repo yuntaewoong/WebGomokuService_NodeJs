@@ -1,13 +1,16 @@
-<h1>Main Page</h1>
+<h1>Web Gomoku</h1>
 
 <% if(!user){ %>
   <a href="auth/login">Login</a>
 <% } else { %>
-  <p>Welcome <%= user.id %></p>
+  <p>Welcome <%= user.displayName %></p>
     <form class="form-inline" action="/game" method="post">
         <input type="hidden" value = "<%= user.id%>" name = "id">
         <input type="hidden" value= "<%= user.displayName%>" name="displayName">
         <button class="btn btn-primary btn-sm">Go Game</button>
+    </form>
+    <form class="form-inline" action="/gameData" method="get">
+      <button class="btn btn-primary btn-sm">View Win/Lose Data</button>
     </form>
     <a href="auth/logout">Logout</a>
 <% } %>
