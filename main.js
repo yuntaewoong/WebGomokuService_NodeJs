@@ -50,9 +50,9 @@ server.listen(3000, function() {});
 app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 게임입장을 요청
   tempUserId = parseInt(req.body.id);
   tempUserDisplayName = req.body.displayName;
-  // for(let i  =0;i<Users.length;i++)
-  //   if(Users[i] == tempUserId)
-  //     res.send("중복된 id로 접속할 수 없습니다. 다른 ID로 다시 접속해주세요");
+  for(let i  =0;i<Users.length;i++)
+    if(Users[i] == tempUserId)
+      res.send("중복된 id로 접속할 수 없습니다. 다른 ID로 다시 접속해주세요");
   Users.push(tempUserId);
   res.sendFile(path.join(__dirname, 'Index.html'));
 });
