@@ -70,6 +70,7 @@ class Board
 		this.DrawGrid();
 		this.DrawStone();
 		this.DrawMouseOnRect();
+		this.DrawBackGround();
 	}
 	DrawGrid()
 	{
@@ -142,6 +143,13 @@ class Board
 			ctx.closePath();
 			ctx.fill();
 		}
+	}
+	DrawBackGround()
+	{
+		ctx.globalCompositeOperation = 'destination-over';
+		ctx.fillStyle = "#FF9933";
+		ctx.fillRect(this.blank,this.blank,this.size,this.size);
+		ctx.globalCompositeOperation = 'source-over';
 	}
 	ParseMouseToBoard(mouse)
 	{

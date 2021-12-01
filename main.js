@@ -207,6 +207,19 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
     }
   });
   socket.on('disconnect', function () {
-		  console.log('user disconnected');
+    for(let i = 0;i<Rooms.length;i++)
+    {
+      if(Rooms[i].blackSocketId == socket.id)
+      {
+        io.in(Rooms[i].roomName).emit("GameEnd",'white');//검정이 나가면 흰색승
+        io.in(Rooms[i].roomName).emit("SomeoneLeft");//상대가 나가서 이겼음을 알림
+      }
+      else if(Rooms[i].whiteSocketId == socket.id)
+      {
+        io.in(Rooms[i].roomName).emit("GameEnd",'black');//흰색이 나가면 검정승
+        io.in(Rooms[i].roomName).emit("SomeoneLeft");//상대가 나가서 이겼음을 알림
+      }
+    }
+		console.log('user disconnected');
   });
 });

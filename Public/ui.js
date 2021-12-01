@@ -23,6 +23,7 @@ class UI
     myColor;
     isBlackWin = false;
     isWhiteWin = false;
+    isOpponentLeft = false;
     constructor()
     {
     }
@@ -34,32 +35,44 @@ class UI
     }
 	DrawWinUI()
 	{
-        if(!(this.isBlackWin || this.isWhiteWin))
+        if(!(this.gameState == GameState.GAMEEND))
             return;
+        if(this.isOpponentLeft)//상대방이 나갔으면
+        {
+            ctx.font = '30px serif';
+            ctx.fillStyle = "rgba(0,0,0,1)";
+            ctx.fillText("Opponent Left The Game",this.winUIX,this.winUIY-30);
+        }
 		if(this.isBlackWin)//흑색이 이길때
         {
             ctx.font = '30px serif';
             ctx.fillStyle = "rgba(0,0,0,1)";
-            ctx.fillText("Winner is Black",this.winUIX,this.winUIY);
+            ctx.fillText("Winner Is Black",this.winUIX,this.winUIY);
         }
-        if(this.isWhiteWin)//흰색이 이길때
+        else if(this.isWhiteWin)//흰색이 이길때
 		{
             ctx.font = '30px serif';
             ctx.fillStyle = "rgba(0,0,0,1)";
-            ctx.fillText("Winner is White",this.winUIX,this.winUIY);
+            ctx.fillText("Winner Is White",this.winUIX,this.winUIY);
         }
+        ctx.strokeRect(this.returnHomeButtonX,this.returnHomeButtonY,this.returnHomeButtonWidth,this.returnHomeButtonHeight);
+        ctx.font = '35px serif';
         ctx.fillStyle = "rgba(0,0,0,1)";
-        ctx.fillRect(this.returnHomeButtonX,this.returnHomeButtonY,this.returnHomeButtonWidth,this.returnHomeButtonHeight);
+        ctx.fillText("Home",this.returnHomeButtonX + 3,this.returnHomeButtonY + this.returnHomeButtonHeight/2 +10);
 	}
 	DrawWaitingUI()
 	{
         if((this.myColor == 'black' && this.gameState == GameState.WHITETURN) ||
         (this.myColor == 'white' && this.gameState == GameState.BLACKTURN))//내턴이 아닐때
         {
-            ctx.font = '30px serif';
-            ctx.fillStyle = "rgba(0,0,0,1)";
-            ctx.fillText("The opponent is thinking...",this.waitingUIX,this.waitingUIY);
-            ctx.closePath();
+            let today = new Date();   
+            if(Math.sin(today.getMilliseconds() /100 *Math.PI + Math.PI/2) >= 0)//
+            {
+                ctx.font = '30px serif';
+                ctx.fillStyle = "rgba(0,0,0,1)";
+                ctx.fillText("The Opponent Is Thinking...",this.waitingUIX,this.waitingUIY);
+                ctx.closePath();
+            }
         }
 	}
     DrawInfo()

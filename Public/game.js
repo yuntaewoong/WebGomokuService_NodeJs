@@ -27,6 +27,9 @@ socket.on("GetOpponentInfo",function(displayName,winCount,loseCount){
     OpponentWinCount = winCount;
     OpponentLoseCount = loseCount;
 });
+socket.on("SomeoneLeft",function(){
+    board.ui.isOpponentLeft = true;
+});
 socket.on("GameReady",function(stoneColor,roomNum) {//서버로부터 게임준비가 완료되었다고 전달받음
     socket.emit("GetScreenInfo");
     console.log("GameReady My stone color is" +  stoneColor);
