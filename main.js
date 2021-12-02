@@ -85,20 +85,33 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
         }
       });
       
-    socket.join(RoomNum);
+    
     if(Rooms.length == RoomNum)//아직 RoomNum에 해당하는 Room이 존재하지 않는다면
     {
+      socket.join(RoomNum);
       Rooms.push(new Room(RoomNum));//방정보 생성
       Rooms[RoomNum].blackSocketId = socket.id;
       Rooms[RoomNum].blackId = id;
     }
     else//이미 RoomNum해당하는 Room이 존재한다면
     {
-      Rooms[RoomNum].whiteSocketId = socket.id;
-      Rooms[RoomNum].whiteId = id;
-      io.to(Rooms[RoomNum].whiteSocketId).emit('GameReady', 'white',RoomNum);
-      io.to(Rooms[RoomNum].blackSocketId).emit('GameReady', 'black',RoomNum);//플레이어에게 게임이 준비되었고 자신의 돌이 흑,백중 무엇인지 전달
-      RoomNum++;
+      if(Rooms[RoomNum].isValid)//유효한 방이라면
+      {
+        socket.join(RoomNum);
+        Rooms[RoomNum].whiteSocketId = socket.id;
+        Rooms[RoomNum].whiteId = id;
+        io.to(Rooms[RoomNum].whiteSocketId).emit('GameReady', 'white',RoomNum);
+        io.to(Rooms[RoomNum].blackSocketId).emit('GameReady', 'black',RoomNum);//플레이어에게 게임이 준비되었고 자신의 돌이 흑,백중 무엇인지 전달
+        RoomNum++;
+      }
+      else
+      {
+        RoomNum++;
+        socket.join(RoomNum);
+        Rooms.push(new Room(RoomNum));//방정보 생성
+        Rooms[RoomNum].blackSocketId = socket.id;
+        Rooms[RoomNum].blackId = id;
+      }
     }
   });
   socket.on("PutBlackStone",function(blackXIndex,blackYIndex,roomNum){//흑색 플레이어가 착수요청
@@ -213,11 +226,13 @@ io.on('connection', function (socket) {//게임입장한 유저들은 IO로 관�
       {
         io.in(Rooms[i].roomName).emit("GameEnd",'white');//검정이 나가면 흰색승
         io.in(Rooms[i].roomName).emit("SomeoneLeft");//상대가 나가서 이겼음을 알림
+        Rooms[i].isValid = false;
       }
       else if(Rooms[i].whiteSocketId == socket.id)
       {
         io.in(Rooms[i].roomName).emit("GameEnd",'black');//흰색이 나가면 검정승
         io.in(Rooms[i].roomName).emit("SomeoneLeft");//상대가 나가서 이겼음을 알림
+        Rooms[i].isValid = false;
       }
     }
 		console.log('user disconnected');
