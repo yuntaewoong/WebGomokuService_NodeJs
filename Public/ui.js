@@ -62,10 +62,20 @@ class UI
 	}
 	DrawWaitingUI()
 	{
+        let today = new Date();  
+        if(OpponentWinCount == -1)//상대가 아직 접속 안했을때
+        {
+            if(Math.sin(today.getMilliseconds() /100 *Math.PI + Math.PI/2) >= 0)//
+            {
+                ctx.font = '30px serif';
+                ctx.fillStyle = "rgba(0,0,0,1)";
+                ctx.fillText("Waiting opponent...",this.waitingUIX,this.waitingUIY);
+                ctx.closePath();
+            }
+        }
         if((this.myColor == 'black' && this.gameState == GameState.WHITETURN) ||
         (this.myColor == 'white' && this.gameState == GameState.BLACKTURN))//내턴이 아닐때
-        {
-            let today = new Date();   
+        {  
             if(Math.sin(today.getMilliseconds() /100 *Math.PI + Math.PI/2) >= 0)//
             {
                 ctx.font = '30px serif';
