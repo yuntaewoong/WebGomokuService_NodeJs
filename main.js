@@ -50,9 +50,9 @@ server.listen(3000, function() {});
 app.post('/game',urlencodedParser, function(req, res) {//로그인한 유저가 게임입장을 요청
   tempUserId = parseInt(req.body.id);
   tempUserDisplayName = req.body.displayName;
-  for(let i  =0;i<Users.length;i++)
-    if(Users[i] == tempUserId)
-      res.sendFile(path.join(__dirname, 'error.html'));
+  // for(let i  =0;i<Users.length;i++)
+  //   if(Users[i] == tempUserId)
+  //     res.sendFile(path.join(__dirname, 'error.html'));
   Users.push(tempUserId);
   res.sendFile(path.join(__dirname, 'Index.html'));
 });
