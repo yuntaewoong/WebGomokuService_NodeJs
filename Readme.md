@@ -9,7 +9,7 @@
 
   
 
-* 사이트에 접속한 유저들이 로그인 과정을 거치고 서로 오목대전을 즐길 수 있도록 제공하는 서비스
+사이트에 접속한 유저들이 로그인 과정을 거치고 서로 오목대전을 즐길 수 있도록 제공하는 서비스
 
   
 
@@ -36,8 +36,9 @@
 
 ## Getting Started
 
-   aws로 제공하는 오목대전 서비스 접속 : [접속](http://ec2-3-35-234-116.ap-northeast-2.compute.amazonaws.com:3000)(경희대 메일+교수님 메일로 로그인 가능)
-
+   aws로 제공하는 오목대전 서비스 접속 : [접속하기](http://ec2-3-35-234-116.ap-northeast-2.compute.amazonaws.com:3000)(경희대 메일+교수님 메일로 로그인 가능)
+   또는,  
+   다음 과정을 따라 진행한 후, 로컬PC에서 NodeJs실행 후 로컬PC에서 localhost:3000 으로 접속하기
 ### Prerequisites
 
 * nodejs 설치 [Node.js](https://nodejs.org/ko/download/)
@@ -65,7 +66,7 @@ npm install
 
 ### Google OAuth Client ID, Client Secret creation
 
-* 다음 [블로그](https://www.a-mean-blog.com/ko/blog/%EB%8B%A8%ED%8E%B8%EA%B0%95%EC%A2%8C/_/Node-JS-%EC%84%9C%EB%B2%84%EC%97%90-%EA%B5%AC%EA%B8%80-%EC%86%8C%EC%85%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B8%B0%EB%8A%A5-%EB%84%A3%EA%B8%B0-1-2-Google-OAuth-Client-ID-Client-Secret-%EC%83%9D%EC%84%B1%EB%B0%A9%EB%B2%95)글에서 안내하는대로 OAuth Client ID, ClientSecret발급, call back url은 다음과 같이 설정
+* 다음 [블로그](https://www.a-mean-blog.com/ko/blog/%EB%8B%A8%ED%8E%B8%EA%B0%95%EC%A2%8C/_/Node-JS-%EC%84%9C%EB%B2%84%EC%97%90-%EA%B5%AC%EA%B8%80-%EC%86%8C%EC%85%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B8%B0%EB%8A%A5-%EB%84%A3%EA%B8%B0-1-2-Google-OAuth-Client-ID-Client-Secret-%EC%83%9D%EC%84%B1%EB%B0%A9%EB%B2%95)글에서 안내하는대로 구글에서 제공하는 OAuth Client ID, ClientSecret발급, call back url은 다음과 같이 설정
 
 ```
 http://localhost:3000/auth/google/callback
@@ -95,18 +96,18 @@ node main.js
 ## Usage
 
   ![로그인](./image/Login.PNG)
-  ### 이 어플리케이션은 구글 로그인으로 접속할 수 있습니다.
+  이 어플리케이션은 구글 로그인으로 접속할 수 있습니다.
   ![데이터베이스 조회](./image/Database.PNG)
-  ### 모든 유저의 승,패 횟수를 조회할 수 있습니다. 
+  모든 유저의 승,패 횟수를 조회할 수 있습니다. 
   ![상대방 대기](./image/Waiting.PNG)
-  ### 이 게임은 플레이어와 플레이어간의 오목대전을 지원합니다. 2명의 플레이어가 순차적으로 사이트에 접속하면 게임이 바로 시작됩니다.
+  이 게임은 플레이어와 플레이어간의 오목대전을 지원합니다. 2명의 플레이어가 순차적으로 사이트에 접속하면 게임이 바로 시작됩니다.
   ![메인 게임](./image/Main.PNG)
-  ### 게임이 시작되면 자신의 턴에 마우스 클릭으로 돌을 둘 수 있습니다. 플레이어들은 번갈아 가며 돌을 두게 되고
-  ### 먼저 5개의 연속된 돌을 만드는 사람이 승리합니다.
+  게임이 시작되면 자신의 턴에 마우스 클릭으로 돌을 둘 수 있습니다. 플레이어들은 번갈아 가며 돌을 두게 되고
+  먼저 5개의 연속된 돌을 만드는 사람이 승리합니다.
   ![승패 화면](./image/Win.PNG)
-  ### 게임의 승부가 결정이 나면 승리자의 승수, 패배자의 패수가 증가합니다. 
+  게임의 승부가 결정이 나면 승리자의 승 수, 패배자의 패 수가 증가합니다. 
   ![상대가 나간 화면](./image/Left.PNG)
-  ### 게임 중간에 상대가 나가면 해당 방의 게임은 남아있는 사람의 승리로 처리됩니다.
+  게임 중간에 상대가 나가면 해당 방의 게임은 남아있는 사람의 승리로 처리됩니다.
   
   
   
@@ -137,11 +138,5 @@ node main.js
 ## License
 This project is licensed under the terms of the MIT license
 ## Contact
-
-  
-
 2018102213 윤태웅 15ywt@khu.ac.kr
-
-  
-
 프로젝트 주소 : http://khuhub.khu.ac.kr/2018102213/WebGomokuService 
